@@ -19,9 +19,11 @@
                     <div class="card-footer">
                         <small class="text-muted">Category: @product.CategoryName</small><br />
                         <small class="text-muted">Price: @product.PriceFormatted</small>
-                        <br/>
+                        <br />
                         <form asp-action="Add" asp-controller="Cart" method="post" class="mt-2">
                             <input type="hidden" name="productId" value="@product.Id" />
+                            <!-- Include current page so we can return user to the same page -->
+                            <input type="hidden" name="currentPage" value="@ViewBag.CurrentPage" />
                             <button type="submit" class="btn btn-primary btn-sm">Add to Cart</button>
                         </form>
                     </div>

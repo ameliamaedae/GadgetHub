@@ -22,14 +22,14 @@ namespace GadgetHub.WebUI.Controllers
         }
 
         [HttpPost]
-        public IActionResult Add(int productId)
+        // 1. Accept currentPage as a parameter
+        public IActionResult Add(int productId, int currentPage)
         {
             var cart = GetCartFromSession() ?? new List<CartItem>();
             var existingItem = cart.FirstOrDefault(ci => ci.ProductId == productId);
 
             if (existingItem == null)
             {
-                // Fetch the product from DB so we have name, price, etc.
                 var product = _context.Products.Find(productId);
                 if (product == null)
                     return NotFound(); // or handle differently
@@ -41,21 +41,19 @@ namespace GadgetHub.WebUI.Controllers
                     UnitPrice = product.Price,
                     Quantity = 1
                 });
-
-                // Display "added" message
+                
                 TempData["CartAlert"] = $"<strong>{product.Name}</strong> was added to your cart!";
             }
             else
             {
                 existingItem.Quantity++;
-                // Display "updated" message
                 TempData["CartAlert"] = $"<strong>{existingItem.ProductName}</strong> quantity increased to {existingItem.Quantity}.";
             }
 
             SaveCartToSession(cart);
 
-            // Redirect wherever you want: back to Home or cart Index
-            return RedirectToAction("Index", "Home");
+            // 2. Redirect back to Home/Index with the same page number
+            return RedirectToAction("Index", "Home", new { page = currentPage });
         }
 
         [HttpPost]
