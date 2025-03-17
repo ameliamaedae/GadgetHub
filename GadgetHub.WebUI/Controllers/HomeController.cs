@@ -4,44 +4,43 @@ using GadgetHub.WebUI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace GadgetHub.WebUI.Controllers
+namespace GadgetHub.WebUI.Controllers;
+
+public class HomeController : Controller
 {
-    public class HomeController : Controller
+    private readonly GadgetHubContext _context;
+    private readonly ILogger<HomeController> _logger;
+
+    public HomeController(GadgetHubContext context, ILogger<HomeController> logger)
     {
-        private readonly GadgetHubContext _context;
-        private readonly ILogger<HomeController> _logger;
+        _context = context;
+        _logger = logger;
+    }
 
-        public HomeController(GadgetHubContext context, ILogger<HomeController> logger)
+    public async Task<IActionResult> Index()
+    {
+        var products = await _context.Products.Include(p => p.Category).ToListAsync();
+
+        var productViewModels = products.Select(p => new ProductViewModel
         {
-            _context = context;
-            _logger = logger;
-        }
+            Id = p.Id,
+            Name = p.Name,
+            Description = p.Description,
+            PriceFormatted = p.Price.ToString("C"),
+            CategoryName = p.Category?.Name ?? "Uncategorized"
+        }).ToList();
 
-        public async Task<IActionResult> Index()
-        {
-            var products = await _context.Products.Include(p => p.Category).ToListAsync();
+        return View(productViewModels);
+    }
 
-            var productViewModels = products.Select(p => new ProductViewModel
-            {
-                Id = p.Id,
-                Name = p.Name,
-                Description = p.Description,
-                PriceFormatted = p.Price.ToString("C"),
-                CategoryName = p.Category?.Name ?? "Uncategorized"
-            }).ToList();
+    public IActionResult Privacy()
+    {
+        return View();
+    }
 
-            return View(productViewModels);
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
+    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    public IActionResult Error()
+    {
+        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
 }

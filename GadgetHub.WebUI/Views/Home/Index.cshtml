@@ -1,7 +1,26 @@
-﻿@{
+﻿@using GadgetHub.Domain.Entities
+@model IEnumerable<ProductViewModel>
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
+
+    <div class="container my-4">
+        <h2 class="mb-4">Available Products</h2>
+        <div class="row">
+            @foreach (var product in Model)
+            {
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">@product.Name</h5>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
 
 </div>
