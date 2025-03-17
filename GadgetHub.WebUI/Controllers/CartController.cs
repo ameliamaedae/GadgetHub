@@ -25,9 +25,8 @@ namespace GadgetHub.WebUI.Controllers
         public IActionResult Add(int productId)
         {
             var cart = GetCartFromSession() ?? new List<CartItem>();
-
-            // Check if this product is already in the cart
             var existingItem = cart.FirstOrDefault(ci => ci.ProductId == productId);
+
             if (existingItem == null)
             {
                 // Fetch the product from DB so we have name, price, etc.
@@ -42,15 +41,20 @@ namespace GadgetHub.WebUI.Controllers
                     UnitPrice = product.Price,
                     Quantity = 1
                 });
+
+                // Display "added" message
+                TempData["CartAlert"] = $"<strong>{product.Name}</strong> was added to your cart!";
             }
             else
             {
                 existingItem.Quantity++;
+                // Display "updated" message
+                TempData["CartAlert"] = $"<strong>{existingItem.ProductName}</strong> quantity increased to {existingItem.Quantity}.";
             }
 
             SaveCartToSession(cart);
 
-            // Redirect wherever you want: back to home or cart index
+            // Redirect wherever you want: back to Home or cart Index
             return RedirectToAction("Index", "Home");
         }
 
@@ -59,9 +63,11 @@ namespace GadgetHub.WebUI.Controllers
         {
             var cart = GetCartFromSession() ?? new List<CartItem>();
             var item = cart.FirstOrDefault(ci => ci.ProductId == productId);
+
             if (item != null && quantity > 0)
             {
                 item.Quantity = quantity;
+                TempData["CartAlert"] = $"<strong>{item.ProductName}</strong> quantity updated to {quantity}.";
             }
 
             SaveCartToSession(cart);
@@ -72,7 +78,12 @@ namespace GadgetHub.WebUI.Controllers
         public IActionResult Remove(int productId)
         {
             var cart = GetCartFromSession() ?? new List<CartItem>();
-            cart.RemoveAll(ci => ci.ProductId == productId);
+            var itemToRemove = cart.FirstOrDefault(ci => ci.ProductId == productId);
+            if (itemToRemove != null)
+            {
+                cart.Remove(itemToRemove);
+                TempData["CartAlert"] = $"<strong>{itemToRemove.ProductName}</strong> was removed from your cart.";
+            }
 
             SaveCartToSession(cart);
             return RedirectToAction("Index");
