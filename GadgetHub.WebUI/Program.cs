@@ -4,36 +4,62 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// ---------------------------------------------
+// 1. Configure Services
+// ---------------------------------------------
+
+// Register MVC controllers with views
 builder.Services.AddControllersWithViews();
 
-// Set up the connection string – you can define it in appsettings.json
+builder.Services.AddHttpContextAccessor();
+
+// Register DbContext
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
                        ?? "Data Source=GadgetHub.db";
-
-// Register the DbContext from the Domain project using SQLite:
 builder.Services.AddDbContext<GadgetHubContext>(options =>
     options.UseSqlite(connectionString));
 
+// (Optional) Add Session support
+builder.Services.AddSession(options =>
+{
+    // options.IdleTimeout = TimeSpan.FromMinutes(20);
+});
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// ---------------------------------------------
+// 2. Configure Middleware Pipeline
+// ---------------------------------------------
+
+// Use exception handling / HSTS in production
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
+// Enforce HTTPS
 app.UseHttpsRedirection();
+
+// Serve static files (e.g., CSS, JS, images in wwwroot)
+app.UseStaticFiles();
+
+// Enable routing
 app.UseRouting();
 
+// (Optional) Enable session
+app.UseSession();
+
+// If you have any authentication/authorization in the future:
 app.UseAuthorization();
 
+// Map static assets from a custom extension method (if needed)
 app.MapStaticAssets();
 
-// Configure routes using the dedicated class.
+// Configure routes via the RouteConfigurator
 RouteConfigurator.ConfigureRoutes(app);
 
-
+// ---------------------------------------------
+// 3. Run the Application
+// ---------------------------------------------
 app.Run();

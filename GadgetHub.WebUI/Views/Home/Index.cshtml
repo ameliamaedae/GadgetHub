@@ -1,26 +1,58 @@
-﻿@using GadgetHub.Domain.Entities
-@model IEnumerable<ProductViewModel>
+﻿@model IEnumerable<GadgetHub.WebUI.Models.ProductViewModel>
 
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
+<div class="container my-4">
+    <h2 class="mb-4">Available Products</h2>
 
-    <div class="container my-4">
-        <h2 class="mb-4">Available Products</h2>
-        <div class="row">
-            @foreach (var product in Model)
-            {
-                <div class="col-md-4 mb-3">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title">@product.Name</h5>
-                        </div>
+    <div class="row">
+        @foreach (var product in Model)
+        {
+            <div class="col-md-4 mb-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">@product.Name</h5>
+                        <p class="card-text">@product.Description</p>
+                    </div>
+                    <div class="card-footer">
+                        <small class="text-muted">Category: @product.CategoryName</small><br />
+                        <small class="text-muted">Price: @product.PriceFormatted</small>
+                        <br/>
+                        <form asp-action="Add" asp-controller="Cart" method="post" class="mt-2">
+                            <input type="hidden" name="productId" value="@product.Id" />
+                            <button type="submit" class="btn btn-primary btn-sm">Add to Cart</button>
+                        </form>
                     </div>
                 </div>
-            }
-        </div>
+            </div>
+        }
     </div>
 
+    <!-- Pagination Controls -->
+    <nav aria-label="Product Pagination">
+        <ul class="pagination justify-content-center">
+            @if (ViewBag.CurrentPage > 1)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="?page=@(ViewBag.CurrentPage - 1)">Previous</a>
+                </li>
+            }
+
+            @for (int i = 1; i <= ViewBag.TotalPages; i++)
+            {
+                <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                    <a class="page-link" href="?page=@i">@i</a>
+                </li>
+            }
+
+            @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="?page=@(ViewBag.CurrentPage + 1)">Next</a>
+                </li>
+            }
+        </ul>
+    </nav>
 </div>
