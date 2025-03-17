@@ -1,6 +1,6 @@
 using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
 using GadgetHub.WebUI.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace GadgetHub.WebUI.Controllers;
 
