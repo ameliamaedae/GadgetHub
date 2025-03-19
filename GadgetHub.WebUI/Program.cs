@@ -1,6 +1,7 @@
 using GadgetHub.Domain.Data;
 using GadgetHub.WebUI.Configuration;
 using Microsoft.EntityFrameworkCore;
+using GadgetHub.WebUI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +25,8 @@ builder.Services.AddSession(options =>
 {
     // options.IdleTimeout = TimeSpan.FromMinutes(20);
 });
+
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 var app = builder.Build();
 

@@ -48,4 +48,5 @@ else
     </table>
 
     <h4>Total: @Model.Sum(i => i.UnitPrice * i.Quantity).ToString("C")</h4>
+    <a href="@Url.Action("Index", "Checkout")" class="btn btn-success">Proceed to Checkout</a>
 }

@@ -20,6 +20,14 @@ namespace GadgetHub.WebUI.Controllers
             var cart = GetCartFromSession();
             return View(cart);
         }
+        
+        [HttpPost]
+        public IActionResult Clear()
+        {
+            HttpContext.Session.Remove("Cart");
+            TempData["CartAlert"] = "Your cart has been cleared.";
+            return RedirectToAction("Index");
+        }
 
         [HttpPost]
         // 1. Accept currentPage as a parameter
