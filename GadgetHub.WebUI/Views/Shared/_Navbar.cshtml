@@ -1,5 +1,4 @@
 ﻿@using Newtonsoft.Json
-@using GadgetHub.WebUI.Models
 @inject IHttpContextAccessor HttpContextAccessor
 
 <style>
@@ -8,6 +7,7 @@
         position: relative;
         display: inline-block;
     }
+
     /* The widget is hidden by default */
     .cart-widget {
         display: none;
@@ -17,6 +17,7 @@
         z-index: 1000;
         min-width: 250px;
     }
+
     /* Show widget on hover of the container */
     .cart-container:hover .cart-widget {
         display: block;
@@ -35,7 +36,8 @@
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <!-- Home Link -->
                 <li class="nav-item">
-                    <a class="nav-link" aria-current="page" asp-area="" asp-controller="Home" asp-action="Index">Shop</a>
+                    <a class="nav-link" aria-current="page" asp-area="" asp-controller="Home"
+                       asp-action="Index">Shop</a>
                 </li>
             </ul>
 
@@ -54,6 +56,7 @@
                                     var cartItems = JsonConvert.DeserializeObject<List<CartItem>>(cartJson);
                                     cartCount = cartItems?.Sum(i => i.Quantity) ?? 0;
                                 }
+
                                 @cartCount
                             }
                         </span>)
@@ -62,7 +65,7 @@
                     <div class="card cart-widget">
                         <div class="card-body">
                             @{
-                                int totalItems = 0;
+                                var totalItems = 0;
                                 decimal totalAmount = 0;
                                 if (!string.IsNullOrEmpty(cartJson))
                                 {

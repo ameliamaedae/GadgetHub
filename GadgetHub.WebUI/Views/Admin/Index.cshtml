@@ -1,0 +1,36 @@
+@model IEnumerable<GadgetHub.Domain.Entities.Product>
+@{
+    ViewBag.Title = "Products";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2 class="mb-3">Product Catalog</h2>
+<a class="btn btn-primary mb-3" asp-action="Create">➕ Add New Product</a>
+
+<table class="table table-sm table-bordered align-middle">
+    <thead class="table-dark text-center">
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Category</th>
+        <th class="text-end">Price</th>
+        <th style="width:140px"></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var p in Model)
+    {
+        <tr>
+            <td>@p.Id</td>
+            <td>@p.Name</td>
+            <td>@p.Category?.Name</td>
+            <td class="text-end">@p.Price.ToString("C")</td>
+            <td class="text-center">
+                <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-productId="@p.Id">Edit</a>
+                <a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-productId="@p.Id"
+                   onclick="return confirm('Delete @p.Name?');">Delete</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

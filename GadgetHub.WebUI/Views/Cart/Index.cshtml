@@ -1,4 +1,4 @@
-@model List<GadgetHub.WebUI.Models.CartItem>
+@model List<CartItem>
 
 @{
     ViewData["Title"] = "Your Cart";
@@ -30,15 +30,15 @@ else
                 <td>@item.UnitPrice.ToString("C")</td>
                 <td>
                     <form asp-action="Update" asp-controller="Cart" method="post">
-                        <input type="hidden" name="productId" value="@item.ProductId" />
-                        <input type="number" name="quantity" value="@item.Quantity" min="1" style="width:60px" />
+                        <input type="hidden" name="productId" value="@item.ProductId"/>
+                        <input type="number" name="quantity" value="@item.Quantity" min="1" style="width:60px"/>
                         <button type="submit" class="btn btn-sm btn-primary">Update</button>
                     </form>
                 </td>
                 <td>@((item.Quantity * item.UnitPrice).ToString("C"))</td>
                 <td>
                     <form asp-action="Remove" asp-controller="Cart" method="post">
-                        <input type="hidden" name="productId" value="@item.ProductId" />
+                        <input type="hidden" name="productId" value="@item.ProductId"/>
                         <button type="submit" class="btn btn-sm btn-danger">Remove</button>
                     </form>
                 </td>

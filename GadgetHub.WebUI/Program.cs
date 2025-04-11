@@ -1,7 +1,8 @@
 using GadgetHub.Domain.Data;
+using GadgetHub.Domain.Repositories;
 using GadgetHub.WebUI.Configuration;
-using Microsoft.EntityFrameworkCore;
 using GadgetHub.WebUI.Services;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +28,7 @@ builder.Services.AddSession(options =>
 });
 
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IProductRepository, EFProductRepository>();
 
 var app = builder.Build();
 

@@ -1,33 +1,24 @@
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace GadgetHub.WebUI.Models
+namespace GadgetHub.WebUI.Models;
+
+public class CheckoutViewModel
 {
-    public class CheckoutViewModel
-    {
-        [Required]
-        [EmailAddress]
-        public string Email { get; set; }
-        
-        [Required]
-        public string FullName { get; set; }
-        
-        [Required]
-        public string Address { get; set; }
-        
-        [Required]
-        public string City { get; set; }
-        
-        public string State { get; set; }
-        
-        [Required]
-        public string ZipCode { get; set; }
-        
-        [Required]
-        public string Country { get; set; }
+    [Required] [EmailAddress] public string Email { get; set; }
 
-        public List<CartItem> CartItems { get; set; } = new List<CartItem>();
+    [Required] public string FullName { get; set; }
 
-        public decimal Total { get; set; }
-    }
+    [Required] public string Address { get; set; }
+
+    [Required] public string City { get; set; }
+
+    public string State { get; set; }
+
+    [Required] public string ZipCode { get; set; }
+
+    [Required] public string Country { get; set; }
+
+    public List<CartItem> CartItems { get; set; } = new();
+
+    public decimal Total { get; set; }
 }

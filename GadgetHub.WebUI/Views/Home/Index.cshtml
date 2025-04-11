@@ -1,4 +1,4 @@
-﻿@model IEnumerable<GadgetHub.WebUI.Models.ProductViewModel>
+﻿@model IEnumerable<ProductViewModel>
 
 @{
     ViewData["Title"] = "Home";
@@ -17,13 +17,13 @@
                         <p class="card-text">@product.Description</p>
                     </div>
                     <div class="card-footer">
-                        <small class="text-muted">Category: @product.CategoryName</small><br />
+                        <small class="text-muted">Category: @product.CategoryName</small><br/>
                         <small class="text-muted">Price: @product.PriceFormatted</small>
-                        <br />
+                        <br/>
                         <form asp-action="Add" asp-controller="Cart" method="post" class="mt-2">
-                            <input type="hidden" name="productId" value="@product.Id" />
+                            <input type="hidden" name="productId" value="@product.Id"/>
                             <!-- Include current page so we can return user to the same page -->
-                            <input type="hidden" name="currentPage" value="@ViewBag.CurrentPage" />
+                            <input type="hidden" name="currentPage" value="@ViewBag.CurrentPage"/>
                             <button type="submit" class="btn btn-primary btn-sm">Add to Cart</button>
                         </form>
                     </div>
@@ -42,7 +42,7 @@
                 </li>
             }
 
-            @for (int i = 1; i <= ViewBag.TotalPages; i++)
+            @for (var i = 1; i <= ViewBag.TotalPages; i++)
             {
                 <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
                     <a class="page-link" href="?page=@i">@i</a>
