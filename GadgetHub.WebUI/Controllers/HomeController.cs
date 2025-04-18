@@ -21,31 +21,32 @@ public class HomeController : Controller
     // Accepts an optional page parameter (defaults to 1)
     public async Task<IActionResult> Index(int page = 1)
     {
-        // Fetch all products including their Category data.
-        var products = await _context.Products
+        // Load all products + categories in one go
+        var allProducts = await _context.Products
             .Include(p => p.Category)
             .ToListAsync();
 
-        // Total count for pagination
-        var totalProducts = products.Count;
-
-        // Apply pagination: skip products for previous pages, take current page's products
-        var paginatedProducts = products
+        var totalProducts = allProducts.Count;
+        var paged = allProducts
             .Skip((page - 1) * PageSize)
             .Take(PageSize)
             .ToList();
 
-        // Map products to view models
-        var productViewModels = paginatedProducts.Select(p => new ProductViewModel
+        // Map to view models, including the ImageUrl if available
+        var productViewModels = paged.Select(p => new ProductViewModel
         {
             Id = p.Id,
             Name = p.Name,
             Description = p.Description,
             PriceFormatted = p.Price.ToString("C"),
-            CategoryName = p.Category?.Name ?? "Uncategorized"
+            CategoryName = p.Category?.Name ?? "Uncategorized",
+
+            // Build URL to your GetImage action (or leave null for placeholders)
+            ImageUrl = p.ImageData != null
+                ? Url.Action("GetImage", "Product", new { productId = p.Id })
+                : null
         }).ToList();
 
-        // Pass current page and total pages info to the view via ViewBag
         ViewBag.CurrentPage = page;
         ViewBag.TotalPages = (int)Math.Ceiling(totalProducts / (double)PageSize);
 

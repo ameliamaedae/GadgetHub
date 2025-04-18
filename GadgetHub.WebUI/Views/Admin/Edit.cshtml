@@ -9,7 +9,7 @@
 <h2>@(isNew ? "Add New Product" : $"Edit: {Model.Name}")</h2>
 
 @using (Html.BeginForm("Edit", "Admin", FormMethod.Post,
-            new { enctype="multipart/form-data", @class="needs-validation", novalidate="novalidate" }))
+            new { enctype = "multipart/form-data", @class = "needs-validation", novalidate = "novalidate" }))
 {
     @Html.AntiForgeryToken()
     @Html.HiddenFor(m => m.Id)
@@ -42,11 +42,27 @@
         @Html.ValidationMessageFor(m => m.CategoryId, "", new { @class = "text-danger" })
     </div>
 
+    @* — Show current image when editing *@
+    @if (!isNew && Model.ImageData != null)
+    {
+        <div class="mb-3">
+            <label class="form-label">Current Image</label>
+            <div>
+                <img
+                    src="@Url.Action("GetImage", "Product", new { productId = Model.Id })"
+                    alt="Image for @Model.Name"
+                    class="img-thumbnail"
+                    style="max-height:200px;"
+                />
+            </div>
+        </div>
+    }
+
     <div class="mb-3">
-        <label for="image" class="form-label">Product Image</label>
+        <label for="image" class="form-label">Upload New Image</label>
         <input type="file" name="image" class="form-control" />
     </div>
-    
+
     <button type="submit" class="btn btn-success">💾 Save</button>
     <a class="btn btn-secondary" asp-action="Index">Cancel</a>
 }

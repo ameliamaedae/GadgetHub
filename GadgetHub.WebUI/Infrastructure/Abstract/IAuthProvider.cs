@@ -1,10 +1,7 @@
-using System.Threading.Tasks;
+namespace GadgetHub.WebUI.Infrastructure.Abstract;
 
-namespace GadgetHub.WebUI.Infrastructure.Abstract
+public interface IAuthProvider
 {
-    public interface IAuthProvider
-    {
-        Task<bool> AuthenticateAsync(string userName, string password);
-        Task SignOutAsync();
-    }
+    Task<bool> AuthenticateAsync(string userName, string password);
+    Task SignOutAsync();
 }

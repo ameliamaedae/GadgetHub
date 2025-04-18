@@ -1,13 +1,11 @@
 using GadgetHub.Domain.Data;
 using GadgetHub.Domain.Repositories;
 using GadgetHub.WebUI.Configuration;
-using GadgetHub.WebUI.Services;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using GadgetHub.WebUI.Infrastructure.Abstract;
 using GadgetHub.WebUI.Infrastructure.Concrete;
-
-
+using GadgetHub.WebUI.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,9 +16,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
-        options.LoginPath  = "/Account/Login";
+        options.LoginPath = "/Account/Login";
         options.AccessDeniedPath = "/Account/Login";
-        options.ExpireTimeSpan  = TimeSpan.FromHours(8);
+        options.ExpireTimeSpan = TimeSpan.FromHours(8);
     });
 
 builder.Services.AddScoped<IAuthProvider, FormsAuthProvider>();
