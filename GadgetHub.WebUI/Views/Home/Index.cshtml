@@ -14,6 +14,14 @@
                 <div class="card h-100">
                     <div class="card-body">
                         <h5 class="card-title">@product.Name</h5>
+
+                        @if (product.ImageData != null)
+                        {
+                            <img src="@Url.Action("GetImage","Product", new { productId = product.Id })"
+                                 class="card-img-top mb-2"
+                                 alt="@product.Name" />
+                        }
+                        
                         <p class="card-text">@product.Description</p>
                     </div>
                     <div class="card-footer">

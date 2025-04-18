@@ -8,7 +8,8 @@
 
 <h2>@(isNew ? "Add New Product" : $"Edit: {Model.Name}")</h2>
 
-@using (Html.BeginForm("Edit", "Admin", FormMethod.Post, new { @class = "needs-validation", novalidate = "novalidate" }))
+@using (Html.BeginForm("Edit", "Admin", FormMethod.Post,
+            new { enctype="multipart/form-data", @class="needs-validation", novalidate="novalidate" }))
 {
     @Html.AntiForgeryToken()
     @Html.HiddenFor(m => m.Id)
@@ -41,6 +42,11 @@
         @Html.ValidationMessageFor(m => m.CategoryId, "", new { @class = "text-danger" })
     </div>
 
+    <div class="mb-3">
+        <label for="image" class="form-label">Product Image</label>
+        <input type="file" name="image" class="form-control" />
+    </div>
+    
     <button type="submit" class="btn btn-success">💾 Save</button>
     <a class="btn btn-secondary" asp-action="Index">Cancel</a>
 }

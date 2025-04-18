@@ -3,12 +3,30 @@ using GadgetHub.Domain.Repositories;
 using GadgetHub.WebUI.Configuration;
 using GadgetHub.WebUI.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using GadgetHub.WebUI.Infrastructure.Abstract;
+using GadgetHub.WebUI.Infrastructure.Concrete;
+
+
 
 var builder = WebApplication.CreateBuilder(args);
 
 // ---------------------------------------------
 // 1. Configure Services
 // ---------------------------------------------
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath  = "/Account/Login";
+        options.AccessDeniedPath = "/Account/Login";
+        options.ExpireTimeSpan  = TimeSpan.FromHours(8);
+    });
+
+builder.Services.AddScoped<IAuthProvider, FormsAuthProvider>();
+
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
 
 // Register MVC controllers with views
 builder.Services.AddControllersWithViews();
@@ -36,29 +54,23 @@ var app = builder.Build();
 // 2. Configure Middleware Pipeline
 // ---------------------------------------------
 
-// Use exception handling / HSTS in production
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
 
-// Enforce HTTPS
 app.UseHttpsRedirection();
 
-// Serve static files (e.g., CSS, JS, images in wwwroot)
 app.UseStaticFiles();
 
-// Enable routing
 app.UseRouting();
 
-// (Optional) Enable session
 app.UseSession();
 
-// If you have any authentication/authorization in the future:
+app.UseAuthentication();
 app.UseAuthorization();
 
-// Map static assets from a custom extension method (if needed)
 app.MapStaticAssets();
 
 // Configure routes via the RouteConfigurator

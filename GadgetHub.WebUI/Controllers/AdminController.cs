@@ -3,9 +3,14 @@ using GadgetHub.Domain.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using System.IO;
+
 
 namespace GadgetHub.WebUI.Controllers;
 
+[Authorize]
 public class AdminController : Controller
 {
     private readonly IProductRepository _repo;
@@ -74,4 +79,38 @@ public class AdminController : Controller
             TempData["message"] = $"🗑️ '{deleted.Name}' was deleted.";
         return RedirectToAction(nameof(Index));
     }
+    
+    // POST: /Admin/Edit
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Edit(Product product, IFormFile image)
+    {
+        if (!ModelState.IsValid)
+        {
+            PopulateCategoriesDropDownList(product.CategoryId);
+            return View(product);
+        }
+
+        // If editing, preserve existing image when none is uploaded:
+        if (product.Id != 0)
+        {
+            var existing = _repo.Products.FirstOrDefault(p => p.Id == product.Id);
+            product.ImageData     = existing?.ImageData;
+            product.ImageMimeType = existing?.ImageMimeType;
+        }
+
+        if (image != null && image.Length > 0)
+        {
+            using var ms = new MemoryStream();
+            image.CopyTo(ms);
+            product.ImageData     = ms.ToArray();
+            product.ImageMimeType = image.ContentType;
+        }
+
+        _repo.SaveProduct(product);
+        TempData["message"] = $"✅ '{product.Name}' has been saved.";
+        return RedirectToAction(nameof(Index));
+    }
+    
+    
 }
